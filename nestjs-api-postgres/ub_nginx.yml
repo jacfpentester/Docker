@@ -1,0 +1,41 @@
+version: "3"
+services:
+  node-nginx:
+    restart: always
+    container_name: nginx
+    image: ub-nginx
+    env_file:
+      - ./.env
+    ports:
+      - 3000:3000
+    volumes:
+      - ./postgres/:/var/lib/postgresql/data
+    networks:
+      net-proyecto-nest:
+        ipv4_address: 172.200.10.10
+
+  dbpostgres:
+    image: postgres:14.3
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+        POSTGRES_USER: ${DB_USER}
+        POSTGRES_PASSWORD: ${DB_PASSWORD}
+        POSTGRES_DB: ${DB_NAME}
+    container_name: dbpostgres
+    volumes:
+      - ./desarrollo/:/var/www/html
+    networks:
+      net-proyecto-nest:
+        ipv4_address: 172.200.10.20
+    depends_on:
+      - node-nginx
+
+networks: 
+  net-proyecto-nest:
+    name: net-nest
+    ipam:
+      driver: default 
+      config: 
+        - subnet: "172.200.10.0/24"
