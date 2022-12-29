@@ -43,20 +43,15 @@ git_conf(){
 
 nest_conf(){
     cd "/var/www/html/$PROYECTO"
-    npm i -g @nestjs/cli
-    npm i --force
-    npm audit fix --force
-
-echo "DB_HOST=$DB_HOST
-DB_PORT=$DB_PORT
-DB_USERNAME=$DB_USER
-DB_NAME=$DB_NAME
-DB_PASSWORD=$DB_PASSWORD
-PORT=$PORT
-HOST_API=$HOST_API
-JWT_SECRET=$JWT_SECRET" > .env
-
-echo ".env" >> .gitignore
+    echo "DB_HOST=$DB_HOST
+          DB_PORT=$DB_PORT
+          DB_USERNAME=$DB_USER
+          DB_NAME=$DB_NAME
+          DB_PASSWORD=$DB_PASSWORD
+          PORT=$PORT
+          HOST_API=$HOST_API
+          JWT_SECRET=$JWT_SECRET" > .env
+    echo ".env" >> .gitignore
 
 if [ "$NODE_ENV" = "production" ]; then
    echo "Produccion"
@@ -73,10 +68,13 @@ if [ "$NODE_ENV" = "production" ]; then
    echo ".env" >> .gitignore
    npm run start:prod
   else
-  echo "Desarrollo"
-   cd "/var/www/html/$PROYECTO"
-   npm run start:dev
-   fi
+    echo "Desarrollo"
+    cd "/var/www/html/$PROYECTO"
+    npm i -g @nestjs/cli
+    npm i --force
+    npm audit fix --force
+    npm run start:dev
+  fi
 }
 main(){
     service nginx start
