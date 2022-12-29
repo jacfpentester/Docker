@@ -1,0 +1,64 @@
+FROM ub-base
+
+RUN apt-get update -y && apt install -yq --no-install-recommends \
+    software-properties-common \
+    ca-certificates \
+    gnupg2 \
+    build-essential \
+    nginx 
+
+
+WORKDIR /var/www/html
+
+ARG USUARIO
+ARG PASSWD
+ARG TZ
+ARG DIR_DFILES
+ARG PROYECTO
+ARG URL_GIT
+ARG NAMEGLOBALGIT
+ARG EMAILGLOBALGIT
+ARG KEYRING
+ARG VERSION
+ARG DB_NAME
+ARG DB_PORT
+ARG DB_USER
+ARG DB_PASSWORD
+ARG DB_HOST
+ARG PORT
+ARG HOST_API
+ARG JWT_SECRET
+ARG NODE_ENV
+
+ENV USUARIO=${USUARIO}
+ENV PASSWD=${PASSWD}
+ENV TZ=${TZ}
+ENV DIR_DFILES=$DIR_DFILES
+ENV PROYECTO=$PROYECTO
+ENV URL_GIT=$URL_GIT
+ENV NAMEGLOBALGIT=$NAMEGLOBALGIT
+ENV EMAILGLOBALGIT=$EMAILGLOBALGIT
+ENV KEYRING=$KEYRING
+ENV VERSION=$VERSION
+ENV DB_NAME=$DB_NAME
+ENV DB_PORT=$DB_PORT
+ENV DB_USER=$DB_USER
+ENV DB_PASSWORD=$DB_PASSWORD
+ENV DB_HOST=$DB_HOST
+ENV PORT=$PORT
+ENV HOST_API=$HOST_API
+ENV JWT_SECRET=$JWT_SECRET
+ENV NODE_ENV=$NODE_ENV
+
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+COPY ./nginx.conf /etc/nginx/conf.d/nginx.conf
+
+COPY ./start-nest.sh /root
+RUN chmod +x /root/start-nest.sh
+RUN dos2unix /root/start-nest.sh
+
+
+EXPOSE 80
+
+ENTRYPOINT [ "/root/start-nest.sh" ]
