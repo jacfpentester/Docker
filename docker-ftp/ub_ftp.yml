@@ -1,0 +1,42 @@
+version: "3"
+services:
+  ftp:
+    restart: always
+    container_name: ftp
+    image: ub-ftp
+    env_file:
+      - ./.env
+    ports:
+      - 2000:21
+    volumes:
+      - volftp:/home
+      - ./logs:/var/log/proftpd
+    networks:
+      net-ftp:
+        ipv4_address: 172.200.20.10
+
+ # dbpostgres:
+ #   image: postgres:14.3
+ #   restart: always
+ #   ports:
+ #     - "5432:5432"
+ #   environment:
+ #       POSTGRES_USER: ${DB_USER}
+ #       POSTGRES_PASSWORD: ${DB_PASSWORD}
+ #       POSTGRES_DB: ${DB_NAME}
+ #   container_name: dbpostgres
+ #   networks:
+ #     net-ftp:
+ #       ipv4_address: 172.200.10.20
+ #   depends_on:
+ #     - ftp
+
+networks: 
+  net-ftp:
+    name: net-ftp
+    ipam:
+      driver: default 
+      config: 
+        - subnet: "172.200.20.0/24"
+volumes:
+  volftp:
